@@ -1,10 +1,9 @@
-package Ue2;
+import sample.TCPServer;
 
-import java.math.BigInteger;
 import java.net.*;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Created by nhunimuni on 10.11.17.
@@ -15,10 +14,16 @@ public class Main {
 
 
     public static void main(String args[]) throws SocketException {
-        Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
 
-        for (NetworkInterface netint : Collections.list(nets))
+        /*TCPServer fiboServer = new TCPServer();
+        fiboServer.main(null);*/
+
+        Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+        InetAddress broadcast = null;
+
+        for (NetworkInterface netint : Collections.list(nets)) {
             displayInterfaceInformation(netint);
+        }
     }
 
     static void displayInterfaceInformation(NetworkInterface netint) throws SocketException {
@@ -31,6 +36,12 @@ public class Main {
             System.out.printf("InetAddress: %s\n", inetAddress);
 
             if (inetAddress instanceof Inet4Address) {
+
+                List<InterfaceAddress> list = netint.getInterfaceAddresses();
+                for(InterfaceAddress i: list){
+                    if (i.getBroadcast() != null)
+                    System.out.println("Broadcast IP: " + i.getBroadcast());
+                }
 
                 String sub = inetAddress.toString().substring(1);
                 String[] liste = sub.split("[.]");
@@ -47,9 +58,6 @@ public class Main {
                 System.out.print("\n" + "IPv4 ");
             }
             if (inetAddress instanceof Inet6Address) System.out.print("IPv6 " + "\n");
-
-
-
         }
         System.out.printf("\n");
     }
