@@ -43,7 +43,7 @@ public class Controller implements Initializable {
 
         try
         {
-            String host = "141.64.161.77"; //Nhus IP-Adresse (Server IP-Adresse)
+            String host = "localhost"; //Nhus IP-Adresse (Server IP-Adresse)
             int port = 25000; //Beliebiger freier Port
             InetAddress address = InetAddress.getByName(host); //findet die IP-Adresse des Hosts
             //System.out.println(address.getHostAddress()+" ist die Adresse");

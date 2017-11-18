@@ -11,15 +11,12 @@ import java.util.List;
 public class Main {
 
 
-
-
     public static void main(String args[]) throws SocketException {
 
-        /*TCPServer fiboServer = new TCPServer();
-        fiboServer.main(null);*/
+        UDPServer udpServer = new UDPServer();
+        udpServer.start();
 
         Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-        InetAddress broadcast = null;
 
         for (NetworkInterface netint : Collections.list(nets)) {
             displayInterfaceInformation(netint);
@@ -38,9 +35,9 @@ public class Main {
             if (inetAddress instanceof Inet4Address) {
 
                 List<InterfaceAddress> list = netint.getInterfaceAddresses();
-                for(InterfaceAddress i: list){
+                for (InterfaceAddress i : list) {
                     if (i.getBroadcast() != null)
-                    System.out.println("Broadcast IP: " + i.getBroadcast());
+                        System.out.println("Broadcast IP: " + i.getBroadcast());
                 }
 
                 String sub = inetAddress.toString().substring(1);
@@ -48,11 +45,11 @@ public class Main {
 
                 StringBuffer wort = new StringBuffer();
 
-                for(String s: liste){
+                for (String s : liste) {
                     wort.append(Integer.toBinaryString(Integer.parseInt(s)) + ".");
                 }
 
-                String w = wort.substring(0, wort.length()-1);
+                String w = wort.substring(0, wort.length() - 1);
 
                 System.out.print("Binärformat: " + w);
                 System.out.print("\n" + "IPv4 ");

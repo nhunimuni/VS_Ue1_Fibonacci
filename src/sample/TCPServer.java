@@ -9,23 +9,19 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class TCPServer
+public class TCPServer extends Thread
 {
 
     private static Socket socket; //Repräsentation einer Netzwerkverbindung zwischen zwei Maschinen
 
-    public static void main(String[] args)
-    {
-        try
-        {
-
+    public void run() {
+        try {
             int port = 25000; //TCP-Portnummer
             ServerSocket serverSocket = new ServerSocket(port); //Erzeugung einer Instanz der Klasse ServerSocket auf dem Port, auf dem die Anwendung laufen soll
-            System.out.println("Server Started and listening to the port 25000"); //für uns selber zur Überprüfung auf der Konsole
+            System.out.println("Fibo-Server started and listening to the port 25000"); //für uns selber zur Überprüfung auf der Konsole
 
             //Server läuft weiter, solange die while-Schleife nicht unterbrochen wurde
-            while(true)
-            {
+            while(true) {
                 //Nachricht vom Client lesen
                 socket = serverSocket.accept(); // Verbindungsanfrage des Clients wird hier entgegen genommen
                 InputStream is = socket.getInputStream(); //liefert einen InputStream der mit dem Anschlusstrom des Sockets verbunden ist den socket
@@ -36,14 +32,11 @@ public class TCPServer
 
                 String returnMessage; //lokale Variable
 
-                try
-                {
+                try {
                     int numberInIntFormat = Integer.parseInt(number); //Konvertierung von String in int
                     int returnValue = fib(numberInIntFormat); //Fibonacci
                     returnMessage = String.valueOf(returnValue) + "\n"; //Zuweisung des Int-Wertes als String
-                }
-                catch(NumberFormatException e)
-                {
+                } catch(NumberFormatException e) {
                     //Input war kein int-Wert, weshalb diese Nachricht dem Clienten geschickt wird
                     returnMessage = "Please send a proper number\n";
                 }
@@ -56,18 +49,11 @@ public class TCPServer
                 bw.flush(); //Nachricht wird an den Server gesendet und geleert
                 System.out.println("Message sent to the client is "+returnMessage);
             }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
+        } catch (Exception e) { e.printStackTrace(); }
+        finally{
+            try {
                 socket.close();
-            }
-            catch(Exception e){}
+            } catch(Exception e) { e.printStackTrace(); }
         }
     }
 
