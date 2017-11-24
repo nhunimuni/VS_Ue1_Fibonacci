@@ -13,8 +13,8 @@ public class BroadcastServer extends Thread {
     @Override
     public void run() {
 
-        FibonacchiServer fibonacchiServer = new FibonacchiServer();
-        fibonacchiServer.start();
+        FibonacciServer fibonacciServer = new FibonacciServer();
+        fibonacciServer.start();
 
         try {
             Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
