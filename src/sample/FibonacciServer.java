@@ -6,9 +6,9 @@ import java.net.*;
 /**
  * Created by young on 22.11.2017.
  */
-public class FibonacchiServer extends Thread {
+public class FibonacciServer extends Thread {
 
-    public FibonacchiServer() {
+    public FibonacciServer() {
         System.out.println("started...");
     }
 
