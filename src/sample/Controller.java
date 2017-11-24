@@ -6,12 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import java.awt.event.ActionEvent;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.URL;
-import java.text.ParseException;
+import java.net.*;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -25,66 +21,70 @@ public class Controller implements Initializable {
     @FXML
     private TextField textF;
 
-    private static Socket socket;
+    private String zahl;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sendenB.setOnAction(event -> click());
+        test();
+    }
 
+    private void test() {
+        DatagramSocket multicastSocket = null;
+        try {
+            multicastSocket = new MulticastSocket(9876);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] buf = new byte[1000];
+        DatagramPacket recv = new DatagramPacket(buf, buf.length);
+        try {
+            multicastSocket.receive(recv);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(new String(recv.getData()));
     }
 
     private void click() {
+        zahl = textF.getText();
+
+        DatagramSocket clientSocket = null;
         try {
-            int zahl = Integer.parseInt(textF.getText());
-        } catch (Exception e) {
-            answerL.setText("Bitte eine Zahl eingeben");
+            clientSocket = new DatagramSocket();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        InetAddress IPAddress = null;
+        try {
+            IPAddress = InetAddress.getByName("localhost");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        byte[] sendData;
+        byte[] receiveData = new byte[1024];
+        String sentence = zahl;
+
+        sendData = sentence.getBytes();
+
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 2500);
+        try {
+            clientSocket.send(sendPacket);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try
-        {
-            String host = "141.64.161.77"; //Nhus IP-Adresse (Server IP-Adresse)
-            int port = 25000; //Beliebiger freier Port
-            InetAddress address = InetAddress.getByName(host); //findet die IP-Adresse des Hosts
-            //System.out.println(address.getHostAddress()+" ist die Adresse");
-            socket = new Socket(address, port); //Verbindung zwischen 2 Maschinen (Client & Server)
-
-            //Send the message to the server
-            OutputStream os = socket.getOutputStream(); //verschickt Daten in form von Bytes
-            OutputStreamWriter osw = new OutputStreamWriter(os); //wandelt Zeichen in Bytes um
-            BufferedWriter bw = new BufferedWriter(osw); //schreibt Zeichen ins OutputStream und buffered die
-
-
-
-            String sendMessage = textF.getText() + "\n"; //liest die Zahl aus dem entsprechenden Textfeld
-            bw.write(sendMessage); //Nachricht (als String) wird in den BufferedWriter geschrieben
-            bw.flush(); //Nachricht wird an den Server gesendet und geleert
-            System.out.println("Message sent to the server : "+sendMessage);
-
-            //Get the return message from the server
-            InputStream is = socket.getInputStream(); //liefert einen InputStream der mit dem Anschlusstrom des Sockets verbunden ist den socket
-            InputStreamReader isr = new InputStreamReader(is); //wird mit Anschlusstrom des Socketsv erbunden und wandelt byte in Zeichen
-            BufferedReader br = new BufferedReader(isr); //BufferedReader liest die Zeichen vom input stream und puffert diese
-            String message = br.readLine(); //Zeichen werden gelesen
-            System.out.println("Message received from the server : " +message);
-            answerL.setText(message); //Antwort vom Server wird in das Label geschrieben
+        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+        try {
+            clientSocket.receive(receivePacket);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-        finally
-        {
-            //Closing the socket
-            try
-            {
-                socket.close();
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
+
+        String modifiedSentence = new String(receivePacket.getData());
+        System.out.println("FROM SERVER : " + modifiedSentence);
+        answerL.setText(modifiedSentence);
+        clientSocket.close();
+
     }
-
 }
