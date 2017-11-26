@@ -104,8 +104,9 @@ public class BroadcastServer extends Thread {
                         idx = idx - 8;
                     }
 
-                    String net = str.substring(0, praefix+3); //Leerzeichen trennt für Netzwerk bzw. für Client stehenden Teil
-                    String client = str.substring(praefix+3, wort.length()+3);
+                    String net = wort.substring(0, praefix); //Leerzeichen trennt für Netzwerk bzw. für Client stehenden Teil
+                    String client = wort.substring(praefix, wort.length());
+
                     System.out.println("Praefix: " + praefix); //Konsolenausgabe
                     System.out.println("Binärformat: " + str + "   (vollständig)"); //Konsolenausgabe
                     System.out.println("  (Network)  " + net + " " + client + "  (Host)"); //Konsolenausgabe
