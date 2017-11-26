@@ -9,7 +9,7 @@ import java.net.*;
 public class FibonacciServer extends Thread {
 
     public FibonacciServer() {
-        System.out.println("started...");
+        System.out.println("Fibonacci-Server started...");
     }
 
     public void run() {

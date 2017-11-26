@@ -33,31 +33,31 @@ public class Controller implements Initializable {
     * Hier wird die Nachricht des BroadcastServers empfangen
     */
     private void test() {
-            // Repräsentiert Socket zum versenden und erhalten von Datagram Paketen
-            // verbindungslos, Datagramme, beliebige Reihenfolge (ausgehend und herauskommend)
-            DatagramSocket multicastSocket = null;
-            try {
-                // Der MulticastSocket ist ein UDP DatagramSocket, mit dem Multicast-Pakete empfangen und verschickt werden können
-                // Diese wird durch eine Port Nummer angebeben
-                multicastSocket = new MulticastSocket(9876);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // Wenn wir Daten empfangen, müssen wir nur ein DatagramPacket-Objekt anlegen und den Speicherplatz angeben, an dem die Daten abgelegt werden sollen.
-            // Das Feld ist so etwas wie ein Container /Platzhalter.
-            // Die folgenden Zeilen reichen für einen Server, der am Port 9876 horcht
-            byte[] buf = new byte[1000];
-            DatagramPacket recv = new DatagramPacket(buf, buf.length); //das DatagramPacket mit dem Array
-            try {
-                // Mit der Methodes des DatagramSocket "receive" erhalten wir das Paket.
-                // Die Daten werden im DatagramPacket recv abgelegt
-                multicastSocket.receive(recv);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // Hier erhalten wir die Daten als Byte-Feld und wandeln diese in einen String um
-            // Die erhaltene Nachricht wird auf der Konsole ausgegeben
-            System.out.println(new String(recv.getData()));
+        // Repräsentiert Socket zum versenden und erhalten von Datagram Paketen
+        // verbindungslos, Datagramme, beliebige Reihenfolge (ausgehend und herauskommend)
+        DatagramSocket multicastSocket = null;
+        try {
+            // Der MulticastSocket ist ein UDP DatagramSocket, mit dem Multicast-Pakete empfangen und verschickt werden können
+            // Diese wird durch eine Port Nummer angebeben
+            multicastSocket = new MulticastSocket(9876);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Wenn wir Daten empfangen, müssen wir nur ein DatagramPacket-Objekt anlegen und den Speicherplatz angeben, an dem die Daten abgelegt werden sollen.
+        // Das Feld ist so etwas wie ein Container /Platzhalter.
+        // Die folgenden Zeilen reichen für einen Server, der am Port 9876 horcht
+        byte[] buf = new byte[1000];
+        DatagramPacket recv = new DatagramPacket(buf, buf.length); //das DatagramPacket mit dem Array
+        try {
+            // Mit der Methodes des DatagramSocket "receive" erhalten wir das Paket.
+            // Die Daten werden im DatagramPacket recv abgelegt
+            multicastSocket.receive(recv);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Hier erhalten wir die Daten als Byte-Feld und wandeln diese in einen String um
+        // Die erhaltene Nachricht wird auf der Konsole ausgegeben
+        System.out.println(new String(recv.getData()));
     }
 
     private void click() {

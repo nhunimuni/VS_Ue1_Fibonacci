@@ -5,7 +5,6 @@ package sample;
  */
 public class Server {
     public static void main(String[] args) {
-        BroadcastServer bS = new BroadcastServer();
-        bS.start();
+        new BroadcastServer().start();
     }
 }

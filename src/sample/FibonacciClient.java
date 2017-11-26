@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class FibonacciClient extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Fibonacchi");
         primaryStage.setScene(new Scene(root, 300, 80));

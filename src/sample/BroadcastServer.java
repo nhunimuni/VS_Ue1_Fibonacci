@@ -36,7 +36,7 @@ public class BroadcastServer extends Thread {
                         "implementiert und stellt die Fibonacci-Funktion als Dienst bereit. Um den\n" +
                         "Dienst zu nutzen, senden Sie eine Nachricht an Port [2500] auf diesem Server. Das Format der\n" +
                         "Nachricht sollte folgendermaßen aussehen [...]";
-                DatagramPacket hi = new DatagramPacket(sentence.getBytes(), sentence.length(), group, 9876); //Datenpaket mit benötigten Informationen für Transport
+                DatagramPacket hi = new DatagramPacket(sentence.getBytes(), sentence.length() + 1, group, 9876); //Datenpaket mit benötigten Informationen für Transport
                 multicastSocket.send(hi); //Senden des Datenpakets
 
 
@@ -73,7 +73,7 @@ public class BroadcastServer extends Thread {
                     }
                 }
 
-                if(!netint.isLoopback()) {  //Falls kein Loopback
+                if (!netint.isLoopback()) {  //Falls kein Loopback
                     String sub = inetAddress.toString().substring(1); //Entfernt "/" am Anfang der IPAdressen
                     String[] liste = sub.split("[.]"); //Teilt IPAdressen String an "." und speichert Zahlen in String-Array
 
@@ -81,7 +81,7 @@ public class BroadcastServer extends Thread {
                     String binar;
                     for (String s : liste) { //Geht Einträge aus Array mit Teilzahlen der IPAdresse durch
                         binar = Integer.toBinaryString(Integer.parseInt(s)); //Berechnung der Binärzahl
-                        if(binar.length() < 8){ //Prüft, ob berechnetes Binär 8stellig ist
+                        if (binar.length() < 8) { //Prüft, ob berechnetes Binär 8stellig ist
                             int delta = 8 - binar.length();
                             binar = fillWithZeroes(delta, "0") + Integer.toBinaryString(Integer.parseInt(s)); //füllt fehlende Stellen mit 0en auf
                         }
@@ -90,23 +90,24 @@ public class BroadcastServer extends Thread {
 
                     String net = wort.substring(0, praefix) + " (für Netzwerk)" + "\n"; //Leerzeichen trennt für Netzwerk bzw. für Client stehenden Teil
                     String client = wort.substring(praefix, wort.length() - 1) + " (für Client)" + "\n";
-                    System.out.print("Binärformat: " + wort + " (vollständig)"+ "\n" + net + client); //Konsolenausgabe
+                    System.out.print("Binärformat: " + wort + " (vollständig)" + "\n" + net + client); //Konsolenausgabe
                 }
                 System.out.print("\n" + "IPv4 ");
             }
-            if (inetAddress instanceof Inet6Address) System.out.print("IPv6 " + "\n"); //Findet IPAdressen im IPv6 Format
+            if (inetAddress instanceof Inet6Address)
+                System.out.print("IPv6 " + "\n"); //Findet IPAdressen im IPv6 Format
         }
         System.out.printf("\n");
     }
 
     //Rekursive Funktion, ermittelt fehlende Nullen
     private static String fillWithZeroes(int k, String zero) {
-            if (k == 0) {
-                return "";
-            } else {
-                return zero = zero + fillWithZeroes(--k, zero);
-            }
+        if (k == 0) {
+            return "";
+        } else {
+            return zero = zero + fillWithZeroes(--k, zero);
         }
+    }
 
 
 }
