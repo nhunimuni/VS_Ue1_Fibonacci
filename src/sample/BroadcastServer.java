@@ -13,14 +13,14 @@ public class BroadcastServer extends Thread {
     @Override
     public void run() {
 
-        FibonacciServer fibonacciServer = new FibonacciServer();
+        FibonacciServer fibonacciServer = new FibonacciServer(); //FiboServer wird in einem Thread getstartet
         fibonacciServer.start();
 
         try {
-            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces(); //Sammlung von NetworkInterfaces
 
-            for (NetworkInterface netint : Collections.list(nets)) {
-                displayInterfaceInformation(netint);
+            for (NetworkInterface netint : Collections.list(nets)) { //Durchläuft jedes Interface aus Sammlung
+                displayInterfaceInformation(netint); //Methodenaufruf, um Netzwerkinformationen auszulesen
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -28,16 +28,15 @@ public class BroadcastServer extends Thread {
 
         while (true) {
             try {
-                InetAddress group = InetAddress.getByName("141.64.175.255");
-                DatagramSocket multicastSocket = new MulticastSocket(8765);
+                InetAddress group = InetAddress.getByName("141.64.175.255"); //IP Adresse
+                DatagramSocket multicastSocket = new MulticastSocket(9876); //Initialisierung eines DatagramSockets für Transport der Datenpakete
 
                 String sentence = "Dieser Server wurde von [Nhu Tran, Thao Nguyen Thi, Ka Yan Lam]\n" +
                         "implementiert und stellt die Fibonacci-Funktion als Dienst bereit. Um den\n" +
                         "Dienst zu nutzen, senden Sie eine Nachricht an Port [2500] auf diesem Server. Das Format der\n" +
                         "Nachricht sollte folgendermaßen aussehen [...]";
-                DatagramPacket hi = new DatagramPacket(sentence.getBytes(), sentence.length(),
-                        group, 8765);
-                multicastSocket.send(hi);
+                DatagramPacket hi = new DatagramPacket(sentence.getBytes(), sentence.length(), group, 9876); //Datenpaket mit benötigten Informationen für Transport
+                multicastSocket.send(hi); //Senden des Datenpakets
 
 
             } catch (Exception e) {
@@ -45,7 +44,7 @@ public class BroadcastServer extends Thread {
             }
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(5000); //Thread pausiert für 5000ms=5s nach jedem Nachrichtentransport
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -53,50 +52,60 @@ public class BroadcastServer extends Thread {
 
     }
 
-    static void displayInterfaceInformation(NetworkInterface netint) throws SocketException {
+    private static void displayInterfaceInformation(NetworkInterface netint) throws SocketException {
 
-        Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
-        for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+        Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();                 //Sammlung von iNetAdressen
+        for (InetAddress inetAddress : Collections.list(inetAddresses)) {                   //for-each Schleife geht alle Einträge durch
 
-            System.out.printf("\n" + "Display name: %s\n", netint.getDisplayName());
+            System.out.printf("\n" + "Display name: %s\n", netint.getDisplayName());        //Konsolenausgabe für (Display) Namen und IPAdresse der Netzwerschnittstellen
             System.out.printf("Name: %s\n", netint.getName());
             System.out.printf("InetAddress: %s\n", inetAddress);
 
-            if (inetAddress instanceof Inet4Address) {
-
+            if (inetAddress instanceof Inet4Address) {  //Findet IPAdressen im IPv4 Format
+                int praefix = 0;
+                //InetAddress bc = null;
                 List<InterfaceAddress> list = netint.getInterfaceAddresses();
-                short praefix = 0;
-                InetAddress bc = null;
                 for (InterfaceAddress i : list) {
-                    if (i.getBroadcast() != null) {
-
-
-                        praefix = i.getNetworkPrefixLength();
-                        bc = i.getBroadcast();
-
-                        System.out.println("Broadcast IP: " + i.getBroadcast() + "/" + praefix);
+                    if (i.getBroadcast() != null) { //Ermittelt, ob Broadcastadresse vorhanden ist
+                        System.out.println("Broadcast IP: " + i.getBroadcast()); //Konsolenausgabe für Broadcastadresse
+                        praefix = i.getNetworkPrefixLength(); //Ermittelt Praefixlänge (Teil für Netzwerk)
                     }
                 }
 
-                if (!netint.isLoopback()) {
-                String sub = bc.toString().substring(1); //entfernt den / aus der BroadcastIP im Index 0
-                String[] liste = sub.split("[.]");
+                if(!netint.isLoopback()) {  //Falls kein Loopback
+                    String sub = inetAddress.toString().substring(1); //Entfernt "/" am Anfang der IPAdressen
+                    String[] liste = sub.split("[.]"); //Teilt IPAdressen String an "." und speichert Zahlen in String-Array
 
-                StringBuffer wort = new StringBuffer(); //unsere Zahlenfolge ohne Punkt
+                    StringBuffer wort = new StringBuffer(); //StringBuffer Instanz zum Zusammensetzen der IP Adressen im Binärformat
+                    String binar;
+                    for (String s : liste) { //Geht Einträge aus Array mit Teilzahlen der IPAdresse durch
+                        binar = Integer.toBinaryString(Integer.parseInt(s)); //Berechnung der Binärzahl
+                        if(binar.length() < 8){ //Prüft, ob berechnetes Binär 8stellig ist
+                            int delta = 8 - binar.length();
+                            binar = fillWithZeroes(delta, "0") + Integer.toBinaryString(Integer.parseInt(s)); //füllt fehlende Stellen mit 0en auf
+                        }
+                        wort.append(binar); //Hängt ermittelte (8stellige) Binärzahlen aneinander
+                    }
 
-                for (String s : liste) {
-                    wort.append(Integer.toBinaryString(Integer.parseInt(s)));
-                }
-                    int trenner = 32 - praefix;
-                    String erg = wort.substring(0, wort.length() - trenner) + " " + wort.substring(wort.length() - trenner, wort.length());
-                    System.out.print("Binärformat: " + erg);
+                    String net = wort.substring(0, praefix) + " (für Netzwerk)" + "\n"; //Leerzeichen trennt für Netzwerk bzw. für Client stehenden Teil
+                    String client = wort.substring(praefix, wort.length() - 1) + " (für Client)" + "\n";
+                    System.out.print("Binärformat: " + wort + " (vollständig)"+ "\n" + net + client); //Konsolenausgabe
                 }
                 System.out.print("\n" + "IPv4 ");
             }
-
-            if (inetAddress instanceof Inet6Address) System.out.print("IPv6 " + "\n");
+            if (inetAddress instanceof Inet6Address) System.out.print("IPv6 " + "\n"); //Findet IPAdressen im IPv6 Format
         }
         System.out.printf("\n");
     }
+
+    //Rekursive Funktion, ermittelt fehlende Nullen
+    private static String fillWithZeroes(int k, String zero) {
+            if (k == 0) {
+                return "";
+            } else {
+                return zero = zero + fillWithZeroes(--k, zero);
+            }
+        }
+
 
 }
