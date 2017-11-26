@@ -88,9 +88,19 @@ public class BroadcastServer extends Thread {
                         wort.append(binar); //Hängt ermittelte (8stellige) Binärzahlen aneinander
                     }
 
-                    String net = wort.substring(0, praefix) + " (für Netzwerk)" + "\n"; //Leerzeichen trennt für Netzwerk bzw. für Client stehenden Teil
-                    String client = wort.substring(praefix, wort.length() - 1) + " (für Client)" + "\n";
-                    System.out.print("Binärformat: " + wort + " (vollständig)" + "\n" + net + client); //Konsolenausgabe
+                    //Fügt nach jeder 8. Stelle ein Punkt hinzu für eine bessere Leserlichkeit
+                    StringBuilder str = new StringBuilder(wort);
+                    int idx = str.length() - 8;
+
+                    while (idx > 0)
+                    {
+                        str.insert(idx, ".");
+                        idx = idx - 8;
+                    }
+
+                    String net = str.substring(0, praefix) + " (für Netzwerk)" + "\n"; //Leerzeichen trennt für Netzwerk bzw. für Client stehenden Teil
+                    String client = str.substring(praefix, wort.length() - 1) + " (für Client)" + "\n";
+                    System.out.print("Binärformat: " + str + " (vollständig)" + "\n" + net + client); //Konsolenausgabe
                 }
                 System.out.print("\n" + "IPv4 ");
             }
