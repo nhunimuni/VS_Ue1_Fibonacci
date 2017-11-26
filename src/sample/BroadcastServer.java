@@ -28,7 +28,8 @@ public class BroadcastServer extends Thread {
 
         while (true) {
             try {
-                InetAddress group = InetAddress.getByName("141.64.175.255"); //IP Adresse
+                //InetAddress group = InetAddress.getByName("141.64.175.255"); //IP Adresse
+                InetAddress group = InetAddress.getByName("192.168.178.255"); //IP Adresse
                 DatagramSocket multicastSocket = new MulticastSocket(9876); //Initialisierung eines DatagramSockets für Transport der Datenpakete
 
                 String sentence = "Dieser Server wurde von [Nhu Mong Tran, Thao Nguyen Thi, Ka Yan Lam]\n" +

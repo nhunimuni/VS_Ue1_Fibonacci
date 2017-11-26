@@ -21,10 +21,11 @@ public class FibonacciServer extends Thread {
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        byte[] receiveData = new byte[1024];
-        byte[] sendData;
 
         while (true) {
+            byte[] receiveData = new byte[1024];
+            byte[] sendData;
+
             //ankommendes paket
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             try {
