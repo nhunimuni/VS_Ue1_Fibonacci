@@ -1,6 +1,7 @@
 package sample;
 
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
  * Created by young on 22.11.2017.
  */
 public class BroadcastServer extends Thread {
+
+    private List<InetAddress> broadcastList = new ArrayList<>();
 
     @Override
     public void run() {
@@ -27,33 +30,35 @@ public class BroadcastServer extends Thread {
         }
 
         while (true) {
-            try {
-                //InetAddress group = InetAddress.getByName("141.64.175.255"); //IP Adresse
-                InetAddress group = InetAddress.getByName("192.168.178.255"); //IP Adresse
-                DatagramSocket multicastSocket = new MulticastSocket(9876); //Initialisierung eines DatagramSockets für Transport der Datenpakete
+            for (InetAddress i : broadcastList) {
+                try {
+                    //InetAddress group = InetAddress.getByName("141.64.175.255"); //IP Adresse
+                    System.out.println("sent message to: " + i.toString());
+                    InetAddress group = InetAddress.getByName(i.toString().substring(1)); //IP Adresse
+                    DatagramSocket multicastSocket = new MulticastSocket(9876); //Initialisierung eines DatagramSockets für Transport der Datenpakete
 
-                String sentence = "Dieser Server wurde von [Nhu Mong Tran, Thao Nguyen Thi, Ka Yan Lam]\n" +
-                        "implementiert und stellt die Fibonacci-Funktion als Dienst bereit. Um den\n" +
-                        "Dienst zu nutzen, senden Sie eine Nachricht an Port [2500] auf diesem Server. Das Format der\n" +
-                        "Nachricht sollte folgendermaßen aussehen [...]";
-                DatagramPacket hi = new DatagramPacket(sentence.getBytes(), sentence.length() + 1, group, 9876); //Datenpaket mit benötigten Informationen für Transport
-                multicastSocket.send(hi); //Senden des Datenpakets
+                    String sentence = "Dieser Server wurde von [Nhu Mong Tran, Thao Nguyen Thi, Ka Yan Lam]\n" +
+                            "implementiert und stellt die Fibonacci-Funktion als Dienst bereit. Um den\n" +
+                            "Dienst zu nutzen, senden Sie eine Nachricht an Port [2500] auf diesem Server. Das Format der\n" +
+                            "Nachricht sollte folgendermaßen aussehen [...]";
+                    DatagramPacket hi = new DatagramPacket(sentence.getBytes(), sentence.length() + 1, group, 9876); //Datenpaket mit benötigten Informationen für Transport
+                    multicastSocket.send(hi); //Senden des Datenpakets
 
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            try {
-                Thread.sleep(5000); //Thread pausiert für 5000ms=5s nach jedem Nachrichtentransport
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                try {
+                    Thread.sleep(5000); //Thread pausiert für 5000ms=5s nach jedem Nachrichtentransport
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
     }
 
-    private static void displayInterfaceInformation(NetworkInterface netint) throws SocketException {
+    private void displayInterfaceInformation(NetworkInterface netint) throws SocketException {
 
         Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();                 //Sammlung von iNetAdressen
         for (InetAddress inetAddress : Collections.list(inetAddresses)) {                   //for-each Schleife geht alle Einträge durch
@@ -64,12 +69,13 @@ public class BroadcastServer extends Thread {
 
             if (inetAddress instanceof Inet4Address) {  //Findet IPAdressen im IPv4 Format
                 int praefix = 0;
-                //InetAddress bc = null;
+
                 List<InterfaceAddress> list = netint.getInterfaceAddresses();
                 for (InterfaceAddress i : list) {
                     if (i.getBroadcast() != null) { //Ermittelt, ob Broadcastadresse vorhanden ist
                         System.out.println("Broadcast IP: " + i.getBroadcast()); //Konsolenausgabe für Broadcastadresse
                         praefix = i.getNetworkPrefixLength(); //Ermittelt Praefixlänge (Teil für Netzwerk)
+                        broadcastList.add(i.getBroadcast());
                     }
                 }
 
