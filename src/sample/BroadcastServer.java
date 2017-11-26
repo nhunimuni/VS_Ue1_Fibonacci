@@ -108,8 +108,8 @@ public class BroadcastServer extends Thread {
                     String client = wort.substring(praefix, wort.length());
 
                     System.out.println("Praefix: " + praefix); //Konsolenausgabe
-                    System.out.println("Binärformat: " + str + "   (vollständig)"); //Konsolenausgabe
-                    System.out.println("  (Network)  " + net + " " + client + "  (Host)"); //Konsolenausgabe
+                    System.out.println("Binärformat: " + str + " (vollständig)"); //Konsolenausgabe
+                    System.out.println("  (Network)  " + net + " " + client + "   (Host)"); //Konsolenausgabe
                 }
                 System.out.print("\n" + "IPv4 ");
             }
