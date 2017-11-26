@@ -31,7 +31,7 @@ public class BroadcastServer extends Thread {
                 InetAddress group = InetAddress.getByName("141.64.175.255"); //IP Adresse
                 DatagramSocket multicastSocket = new MulticastSocket(9876); //Initialisierung eines DatagramSockets für Transport der Datenpakete
 
-                String sentence = "Dieser Server wurde von [Nhu Tran, Thao Nguyen Thi, Ka Yan Lam]\n" +
+                String sentence = "Dieser Server wurde von [Nhu Mong Tran, Thao Nguyen Thi, Ka Yan Lam]\n" +
                         "implementiert und stellt die Fibonacci-Funktion als Dienst bereit. Um den\n" +
                         "Dienst zu nutzen, senden Sie eine Nachricht an Port [2500] auf diesem Server. Das Format der\n" +
                         "Nachricht sollte folgendermaßen aussehen [...]";
