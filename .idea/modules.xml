@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/VS_Ue1_Fibonacci.iml" filepath="$PROJECT_DIR$/VS_Ue1_Fibonacci.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vs-uebungen.iml" filepath="$PROJECT_DIR$/vs-uebungen.iml" />
     </modules>
   </component>
 </project>
