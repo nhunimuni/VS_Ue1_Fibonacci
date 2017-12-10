@@ -4,8 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 /**
  * 
- * Interface that defines the functions of the Pinnwand Object. 
- * @author Daniel
+ * Interface, welches Funktionalität der Pinnwand beschreibt
  *
  */
 public interface IPinnwand extends Remote {
