@@ -13,9 +13,7 @@ public interface IPinnwand extends Remote {
 	public final static int MAX_NUM_MESSAGES = 20;
 	public final static int MESSAGE_LIFETIME = 600;  //Lifetime in Seconds
 	public final static int MAX_LENGTH_MESSAGE = 160;
-	public final static String PASSWORD = "1337";
-	
-	public int login(String password)throws RemoteException;
+
 	public int getMessageCount()throws RemoteException;
 	public String[]getMessages()throws RemoteException;
 	public String getMessage(int index)throws RemoteException;
